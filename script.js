@@ -42,7 +42,7 @@ const LinkedListFactory = () => {
         this.head = newNode;
 
         return newNode;
-    }
+    };
 
 
     // count the number of nodes in the LL
@@ -57,18 +57,18 @@ const LinkedListFactory = () => {
         }
 
         return count;
-    }
+    };
 
     // return the first node of the LL
     const headF = () => {
         return this.head;
-    }
+    };
 
 
     // return the last node of the LL
     const tailF = () => {
         return this.tail;
-    }
+    };
 
     // return the node at index (n)
     const at = (index) => {
@@ -80,48 +80,149 @@ const LinkedListFactory = () => {
         }
 
         return trav;
-    }
+    };
 
 
     // remove the last node from the LL
     const pop = () => {
 
-        this.tail = null;
-
-        // traverse the LL to find the new tail
-        let trav = this.head;
-        while (trav) {
-
-            trav = trav.next;
-            // if we've found the new tail, designate it
-            if (trav.next === null) {
-                this.tail = trav;
-            }
+        if (!this.head) {
+            return null;
         }
-    }
+
+        if (!this.head.next) {
+            this.head = null;
+            return;
+        }
+        // traverse the LL to find the tail
+        let prev = this.head;
+        let trav = this.head.next;
+
+        while (trav.next !== null) {
+
+            prev = trav;
+            trav = trav.next;
+        }
+
+        // now we've found the tail, so delete it
+        prev.next = null;
+    };
 
 
     // return true if the passed value is found in the LL
+    const contains = (value) => {
 
+        if (!this.head) {
+            return false;
+        }
+
+        let trav = this.head;
+
+        if (trav.value === value) {
+            return true;
+        }
+
+        while (trav.next !== null) {
+            if (trav.value === value) {
+                return true;
+            }
+            trav = trav.next;
+        }
+
+        return false;
+    };
+
+    // returns the index of the node with the passed value
+    const find = (value) => {
+
+        let trav = this.head;
+        let count = 0;
+
+        // traverse the LL until we find the tail
+        while (trav !== null) {
+
+            if (trav.value === value) {
+                return count;
+            }
+
+            count++;
+            trav = trav.next;
+
+        }
+
+        // value not found
+        return null;
+    };
 
     // display the LL in the console
+    const toString = () => {
+
+        let trav = this.head;
+        let output = [];
+        
+        if (trav === null) {
+            output.push("null");
+        }
+
+        while (trav !== null) {
+
+            output.push(`( ${trav.value} ) -> `);
+            if (trav.next === null) {
+                output.push("null");
+            }
+
+            trav = trav.next;
+        }
+
+        console.log(output);
+    };
 
 
     // insert new node with passed value at passed index
+    const insertAt = (value, index) => {
+
+        let newNode = NodeFactory(value);
+
+        if (index === 0) {
+            this.prepend(value);
+            return;
+        }
+
+        let trav = this.head.next;
+        let prev = this.head;
+
+        // traverse the LL to find the correct index
+        for (let i = 0; i < index; i++) {
+            prev = trav;
+            trav = trav.next;
+        }
+
+        // check if we're at the tail
+        if (this.next === null) {
+            this.append(value);
+            return;
+        }
+
+        // we're not, so connect the new node to the next node
+        newNode.next = trav.next;
+
+        // connect the previous node to the new node
+        prev.next = newNode;
+    };
 
 
     // remove node at index (n)
 
-    return { append, prepend, size, headF, tailF, at, pop };
+    return { append, prepend, size, headF, tailF, at, pop, contains, find, toString, insertAt };
 
-}
+};
 
 const NodeFactory = (value) => {
     this.next = null;
     this.value = value;
 
     return { next, value };
-}
+};
 
 const list = LinkedListFactory();
 
