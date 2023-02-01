@@ -1,6 +1,6 @@
 "use strict";
 
-const LinkedListFactory = () => {
+const LinkedListFactory = () => {   
 
     this.head = null;
     this.tail = null;
@@ -184,36 +184,81 @@ const LinkedListFactory = () => {
         let newNode = NodeFactory(value);
 
         if (index === 0) {
-            this.prepend(value);
-            return;
+            if (this.head !== null) {
+                newNode.next = this.head;
+            }
+
+            this.head = newNode;
+
+            return newNode;
         }
 
         let trav = this.head.next;
         let prev = this.head;
 
         // traverse the LL to find the correct index
-        for (let i = 0; i < index; i++) {
+        for (let i = 0; i < (index - 1); i++) {
             prev = trav;
             trav = trav.next;
         }
 
         // check if we're at the tail
-        if (this.next === null) {
-            this.append(value);
-            return;
+        if (trav.next === null) {
+
+            if (this.head === null) {
+                this.head = newNode;
+            }
+    
+            if (this.tail !== null) {
+                this.tail.next = newNode;
+            }
+    
+            this.tail = newNode;
+            newNode.next = null;
+    
+            return newNode;
         }
 
         // we're not, so connect the new node to the next node
-        newNode.next = trav.next;
+        newNode.next = trav;
 
         // connect the previous node to the new node
         prev.next = newNode;
     };
 
 
-    // remove node at index (n)
+    // remove node at index
+    const removeAt = (index) => {
+        
+        if (index === 0) {
+            // if there is a node after the head
+            if (this.head.next !== null) {
+                this.head = this.head.next;
+                return;
+            }
+            // there is no node after the head, so just delete the head
+            if (this.head !== null) {
+                this.head = null;
+                return;
+            }
+        return null;
+        }
 
-    return { append, prepend, size, headF, tailF, at, pop, contains, find, toString, insertAt };
+        let trav = this.head.next;
+        let prev = this.head;
+
+        // traverse the LL to find the correct index
+        for (let i = 0; i < (index - 1); i++) {
+            prev = trav;
+            trav = trav.next;
+        }
+
+        prev.next = trav.next;
+        trav = null;
+
+    };
+
+    return { append, prepend, size, headF, tailF, at, pop, contains, find, toString, insertAt, removeAt };
 
 };
 
